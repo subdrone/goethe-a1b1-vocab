@@ -2,7 +2,12 @@
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" id="metaTheme" content="#eae2d3">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="歌德词汇">
 <title>Goethe A1–B1 词汇表 · 学习台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +21,7 @@
   --a1:#b4531f;--a2:#2f6f9e;--b1:#7a4bb0;
   --shadow:0 1px 2px rgba(52,40,24,.06),0 8px 24px -12px rgba(52,40,24,.28);
   --shadow-sm:0 1px 2px rgba(52,40,24,.08);
-  --nav-w:290px;--tray-w:330px;
+  --nav-w:290px;--tray-w:330px;--tb:calc(62px + env(safe-area-inset-top, 0px));
   --font-d:"Fraunces","Noto Serif SC",Georgia,"Songti SC",serif;
   --font-b:"Sora","Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
 }
@@ -30,7 +35,7 @@ html[data-theme="dark"]{
 }
 *{box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{margin:0;font-family:var(--font-b);color:var(--ink);
+body{margin:0;font-family:var(--font-b);color:var(--ink);-webkit-tap-highlight-color:transparent;overscroll-behavior:none;
   background:
     radial-gradient(1200px 700px at 100% -10%, color-mix(in srgb,var(--accent) 12%,transparent), transparent 60%),
     radial-gradient(900px 600px at -10% 110%, color-mix(in srgb,var(--gm) 10%,transparent), transparent 55%),
@@ -39,8 +44,9 @@ body{margin:0;font-family:var(--font-b);color:var(--ink);
 ::selection{background:color-mix(in srgb,var(--accent) 30%,transparent)}
 button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none}
 input{font-family:inherit}
+[hidden]{display:none!important}
 
-.topbar{height:62px;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--line);
+.topbar{height:var(--tb);display:flex;align-items:center;gap:14px;padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);
   background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(12px) saturate(1.2);position:sticky;top:0;z-index:40}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .logo{width:40px;height:40px;border-radius:12px;flex:none;display:grid;place-items:center;font-family:var(--font-d);font-weight:700;font-size:17px;color:#fff;background:linear-gradient(150deg,var(--accent),#7a2f0f);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--accent) 70%,transparent)}
@@ -61,16 +67,19 @@ input{font-family:inherit}
 .stat b{font-size:15px;font-weight:600}.stat span{font-size:11px;color:var(--muted)}
 .stat .s{display:flex;flex-direction:column;align-items:flex-end}
 
-.shell{display:grid;grid-template-columns:var(--nav-w) minmax(0,1fr) var(--tray-w);grid-template-rows:minmax(0,1fr);height:calc(100vh - 62px);height:calc(100dvh - 62px);transition:grid-template-columns .42s cubic-bezier(.16,1,.3,1)}
+.shell{display:grid;grid-template-columns:var(--nav-w) minmax(0,1fr) var(--tray-w);grid-template-rows:minmax(0,1fr);height:calc(100vh - var(--tb));height:calc(100dvh - var(--tb));transition:grid-template-columns .42s cubic-bezier(.16,1,.3,1)}
 .shell.nav-off{--nav-w:0px}.shell.tray-off{--tray-w:0px}
 aside{min-height:0;overflow:hidden;background:color-mix(in srgb,var(--panel) 94%,transparent)}
 .nav{border-right:1px solid var(--line)}.tray{border-left:1px solid var(--line)}
-.scroller{height:100%;overflow:auto;overscroll-behavior:contain}
+.scroller{height:100%;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .scroller::-webkit-scrollbar{width:10px;height:10px}
 .scroller::-webkit-scrollbar-thumb{background:var(--line2);border-radius:20px;border:3px solid transparent;background-clip:padding-box}
 .scroller::-webkit-scrollbar-thumb:hover{background:var(--muted);background-clip:padding-box;border:3px solid transparent}
 
-.nav-in{width:var(--nav-w);padding:16px 14px 60px;min-width:270px}
+.backdrop{position:fixed;inset:var(--tb) 0 0 0;background:rgba(20,14,8,.46);z-index:44;opacity:0;visibility:hidden;transition:opacity .32s ease,visibility .32s ease}
+.backdrop.show{opacity:1;visibility:visible}
+html[data-theme="dark"] .backdrop{background:rgba(0,0,0,.62)}
+.nav-in{width:var(--nav-w);padding:16px 14px calc(60px + env(safe-area-inset-bottom,0px));min-width:270px}
 .nav h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:20px 6px 9px;font-weight:600}
 .nav h3:first-child{margin-top:0}
 .levelbtns{display:flex;flex-direction:column;gap:5px}
@@ -108,8 +117,8 @@ summary .cat-name{font-family:var(--font-d);font-weight:600}
 .sw-f{background:color-mix(in srgb,var(--gf) 30%,transparent);height:12px;border-radius:3px;border:0}
 .sw-n{background:color-mix(in srgb,var(--gn) 30%,transparent);height:12px;border-radius:3px;border:0}
 
-.content{position:relative;min-height:0;overflow:hidden}
-.content-in{max-width:1200px;margin:0 auto;padding:18px 20px 120px}
+.content{position:relative;min-height:0;overflow:hidden;grid-column:2;grid-row:1}
+.content-in{max-width:1200px;margin:0 auto;padding:18px 20px calc(120px + env(safe-area-inset-bottom,0px))}
 .hero{padding:2px 2px 6px}
 .hero-top{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .hero h2{font-family:var(--font-d);font-size:22px;margin:0 0 3px;letter-spacing:-.01em}
@@ -202,7 +211,7 @@ mark{background:color-mix(in srgb,var(--myellow) 55%,transparent);color:inherit;
 .grow .de{justify-self:start}
 .gzh{font-size:13px;color:var(--ink2)}
 
-.tray-in{width:var(--tray-w);padding:16px 15px 60px;min-width:310px}
+.tray-in{width:var(--tray-w);padding:16px 15px calc(60px + env(safe-area-inset-bottom,0px));min-width:310px}
 .tray-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px 12px}
 .tray-head h2{font-family:var(--font-d);font-size:18px;margin:0;font-weight:600}
 .tray-head .sub{font-size:11px;color:var(--muted);display:block;margin-top:2px}
@@ -230,19 +239,53 @@ mark{background:color-mix(in srgb,var(--myellow) 55%,transparent);color:inherit;
 
 @media (max-width:1080px){
   .shell{grid-template-columns:var(--nav-w) minmax(0,1fr) 0px}
-  .tray{position:fixed;right:0;top:62px;bottom:0;width:min(350px,88vw);z-index:45;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);box-shadow:var(--shadow)}
+  .tray{position:fixed;right:0;top:var(--tb);bottom:0;width:min(350px,88vw);z-index:45;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);box-shadow:var(--shadow);padding-bottom:env(safe-area-inset-bottom,0px)}
   .shell:not(.tray-off) .tray{transform:translateX(0)}
   .tray-in{width:min(350px,88vw);min-width:0}
 }
 @media (max-width:860px){
   .shell{grid-template-columns:0px minmax(0,1fr) 0px}
-  .nav{position:fixed;left:0;top:62px;bottom:0;width:min(310px,86vw);z-index:45;transform:translateX(-100%);transition:transform .4s cubic-bezier(.16,1,.3,1);box-shadow:var(--shadow)}
+  .nav{position:fixed;left:0;top:var(--tb);bottom:0;width:min(320px,88vw);z-index:45;transform:translateX(-100%);transition:transform .4s cubic-bezier(.16,1,.3,1);box-shadow:var(--shadow);padding-bottom:env(safe-area-inset-bottom,0px)}
   .shell:not(.nav-off) .nav{transform:translateX(0)}
-  .nav-in{width:min(310px,86vw);min-width:0}
-  .brand p,.stat{display:none}
-  .content-in{padding:14px 12px 120px}
-  .row{grid-template-columns:auto minmax(140px,1fr) minmax(0,1.1fr);gap:4px 10px}
-  .ex{display:none}
+  .nav-in{width:min(320px,88vw);min-width:0}
+  .brand p,.stat,.legend-inline{display:none}
+  .tbtn span{display:none}
+  .tbtn{padding:0;width:40px;justify-content:center}
+  .tbtn.icon{width:40px}
+  .search{max-width:none}
+  .search input{font-size:16px}
+  .search kbd{display:none}
+  .content-in{padding:12px 12px calc(110px + env(safe-area-inset-bottom,0px))}
+  .hero h2{font-size:19px}
+  .modes{display:flex;width:100%}
+  .mode{flex:1;text-align:center}
+  .row{grid-template-columns:auto minmax(0,1fr);gap:6px 10px;padding:9px 12px}
+  .row > div:nth-child(3){grid-column:1/-1}
+  .row > div:nth-child(3):empty{display:none}
+  .ex{display:flex;padding-left:10px}
+  .dot{width:26px;height:26px}
+  .dot::after{width:8px;height:8px}
+  .lettergrid{grid-template-columns:repeat(8,1fr);gap:6px}
+  .lbtn{min-height:38px;font-size:13px}
+  .lchip,.lvbtn{padding-top:9px;padding-bottom:9px}
+  .section-head{background:var(--bg);padding-top:9px}
+  .section-head .big{font-size:26px}
+  .level-head .lvtag{font-size:20px}
+  .level-head,.section-head{scroll-margin-top:70px}
+  .tray-in{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+  .tlist{max-height:none}
+}
+@media (max-width:560px){
+  .topbar{gap:8px}
+  .brand h1{display:none}
+  .logo{width:34px;height:34px;border-radius:10px;font-size:15px}
+  .content-in{padding:10px 9px calc(96px + env(safe-area-inset-bottom,0px))}
+  .hero h2{font-size:18px}
+  .levels{gap:5px;margin:10px 0 2px}
+  .filters{gap:6px}
+  .de{font-size:15.5px}
+  .section-head .big{font-size:24px}
+  .level-head .lvd{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -253,7 +296,7 @@ mark{background:color-mix(in srgb,var(--myellow) 55%,transparent);color:inherit;
   <div class="brand">
     <span class="logo">A–B</span>
     <div>
-      <h1>Goethe A1–B1 词汇表 <span class="ver" title="如果你看到的不是这个版本号，说明浏览器用的是缓存，请按 Ctrl+Shift+R 强制刷新">v6</span></h1>
+      <h1>Goethe A1–B1 词汇表 <span class="ver" title="如果你看到的不是这个版本号，说明浏览器用的是缓存，请按 Ctrl+Shift+R 强制刷新">v7</span></h1>
       <p>分类不会自动隐藏 · 按「隐藏已分类」一次性移出 · 按「显示全部」放回</p>
     </div>
   </div>
@@ -278,6 +321,8 @@ mark{background:color-mix(in srgb,var(--myellow) 55%,transparent);color:inherit;
     </button>
   </div>
 </header>
+
+<div class="backdrop" id="backdrop"></div>
 
 <div class="shell" id="shell">
   <aside class="nav">
@@ -639,7 +684,7 @@ document.addEventListener("click",e=>{
   const dot=e.target.closest(".dot"); if(dot){ setMark(dot.dataset.mk,dot.dataset.c); return; }
   const lv=e.target.closest("[data-level]"); if(lv && (lv.classList.contains("lvbtn")||lv.classList.contains("lchip"))){ setLevel(lv.dataset.level); return; }
   const md=e.target.closest(".mode"); if(md){ setMode(md.dataset.mode); document.getElementById("contentScroll").scrollTop=0; return; }
-  const gcat=e.target.closest("[data-gcat]"); if(gcat){ e.preventDefault(); e.stopPropagation(); scrollToCat(parseInt(gcat.dataset.gcat,10)); return; }
+  const gcat=e.target.closest("[data-gcat]"); if(gcat){ e.preventDefault(); e.stopPropagation(); scrollToCat(parseInt(gcat.dataset.gcat,10)); closeNavDrawer(); return; }
   const hc=e.target.closest("#btnHideCls"); if(hc){ hideClassifiedNow(); return; }
   const sc=e.target.closest("#btnShowCls"); if(sc){ showAllClassified(); return; }
   const goto=e.target.closest("[data-goto]"); if(goto){ e.preventDefault();
@@ -649,8 +694,8 @@ document.addEventListener("click",e=>{
       document.querySelectorAll('.fchip').forEach(x=>x.classList.toggle('on',x.dataset.f===filter));
       if(mode!=="alpha") setMode("alpha"); else applyFilter();
     }
-    scrollToId(parseInt(goto.dataset.goto,10)); return; }
-  const go=e.target.closest("[data-go]"); if(go){ scrollToLetter(go.dataset.go); return; }
+    scrollToId(parseInt(goto.dataset.goto,10)); if(goto.dataset.mark) closeTrayDrawer(); else closeNavDrawer(); return; }
+  const go=e.target.closest("[data-go]"); if(go){ scrollToLetter(go.dataset.go); closeNavDrawer(); return; }
   const fc=e.target.closest(".fchip"); if(fc){
     showAllClassified();                        // 点任何筛选（含「全部」）都先把移出的词放回，保证一定能看到词
     filter=fc.dataset.f;
@@ -672,8 +717,42 @@ document.addEventListener("keydown",e=>{
     if(document.activeElement===qEl) qEl.blur();
   }
 });
-document.getElementById("btnNav").addEventListener("click",function(){ document.getElementById("shell").classList.toggle("nav-off"); this.classList.toggle("on"); });
-document.getElementById("btnTray").addEventListener("click",function(){ document.getElementById("shell").classList.toggle("tray-off"); this.classList.toggle("on"); });
+/* ---------- drawers / backdrop（手机端抽屉交互） ---------- */
+const shellEl=document.getElementById("shell");
+const backdropEl=document.getElementById("backdrop");
+const btnNavEl=document.getElementById("btnNav");
+const btnTrayEl=document.getElementById("btnTray");
+const mqNavDrawer=window.matchMedia("(max-width:860px)");
+const mqTrayDrawer=window.matchMedia("(max-width:1080px)");
+function drawerActive(){ return (mqNavDrawer.matches&&!shellEl.classList.contains("nav-off")) || (mqTrayDrawer.matches&&!shellEl.classList.contains("tray-off")); }
+function syncBackdrop(){ if(backdropEl) backdropEl.classList.toggle("show",drawerActive()); }
+function closeNavDrawer(){ if(mqNavDrawer.matches){ shellEl.classList.add("nav-off"); btnNavEl.classList.add("on"); syncBackdrop(); } }
+function closeTrayDrawer(){ if(mqTrayDrawer.matches){ shellEl.classList.add("tray-off"); btnTrayEl.classList.add("on"); syncBackdrop(); } }
+function closeAllDrawers(){ shellEl.classList.add("nav-off"); shellEl.classList.add("tray-off"); btnNavEl.classList.add("on"); btnTrayEl.classList.add("on"); syncBackdrop(); }
+btnNavEl.addEventListener("click",function(){
+  const off=shellEl.classList.toggle("nav-off");
+  this.classList.toggle("on",off);
+  if(!off && mqNavDrawer.matches){ shellEl.classList.add("tray-off"); btnTrayEl.classList.add("on"); }
+  syncBackdrop();
+});
+btnTrayEl.addEventListener("click",function(){
+  const off=shellEl.classList.toggle("tray-off");
+  this.classList.toggle("on",off);
+  if(!off && mqTrayDrawer.matches){ shellEl.classList.add("nav-off"); btnNavEl.classList.add("on"); }
+  syncBackdrop();
+});
+backdropEl.addEventListener("click",closeAllDrawers);
+function applyBreakpointDefaults(){          // 窄屏默认收起两个抽屉；回到宽屏恢复
+  if(mqTrayDrawer.matches){ shellEl.classList.add("tray-off"); btnTrayEl.classList.remove("on"); }
+  else { shellEl.classList.remove("tray-off"); }
+  if(mqNavDrawer.matches){ shellEl.classList.add("nav-off"); btnNavEl.classList.remove("on"); }
+  else { shellEl.classList.remove("nav-off"); }
+  syncBackdrop();
+}
+applyBreakpointDefaults();
+if(mqNavDrawer.addEventListener) mqNavDrawer.addEventListener("change",applyBreakpointDefaults);
+if(mqTrayDrawer.addEventListener) mqTrayDrawer.addEventListener("change",applyBreakpointDefaults);
+window.addEventListener("resize",syncBackdrop);
 const hideEl=document.getElementById("hideLearned");
 hideEl.checked=hideLearned;
 hideEl.addEventListener("change",function(){
@@ -707,6 +786,7 @@ importFile.addEventListener("change",function(){
 });
 const themeBtn=document.getElementById("btnTheme");
 function setTheme(t){ document.documentElement.dataset.theme=t; try{localStorage.setItem("goetheA1.theme",t);}catch(e){}
+  const mt=document.getElementById("metaTheme"); if(mt) mt.setAttribute("content",t==="dark"?"#141110":"#eae2d3");
   themeBtn.classList.toggle("on",t==="dark");
   document.getElementById("themeIc").innerHTML=t==="dark"?'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>':'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>'; }
 themeBtn.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
